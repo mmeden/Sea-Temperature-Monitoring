@@ -5,5 +5,5 @@ UseCase dijagram
 
 Instalacija
 cd ~/Downloads
-git clone https://github.com/NikaAK47/Booker
-cd booker
+git clone [https://github.com/NikaAK47/Booker](https://github.com/mmeden/Sea-Temperature-Monitoring)
+cd Sea-Temperature-Monitoring
