@@ -6,5 +6,5 @@ Sea temperature monitoring system je web aplikacija za vođenje evidencije osnov
 ## Instalacija  
 
 cd ~/Downloads  
-git clone [https://github.com/NikaAK47/Booker](https://github.com/mmeden/Sea-Temperature-Monitoring)  
+git clone (https://github.com/mmeden/Sea-Temperature-Monitoring)  
 cd Sea-Temperature-Monitoring
