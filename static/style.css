@@ -1,0 +1,73 @@
+body {
+    background-color: #e9f7fc;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 40px 20px;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+.card {
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+    background-color: #ffffff;
+    max-width: 900px;
+    width: 100%;
+    text-align: center;
+}
+
+h1 {
+    margin-bottom: 10px;
+    color: #0077b6;
+}
+
+.note {
+    font-size: 0.9em;
+    color: #555;
+    margin-bottom: 20px;
+}
+
+table {
+    margin-bottom: 30px;
+}
+
+.btn-primary {
+    background-color: #0077b6;
+    border-color: #0077b6;
+    margin: 0 10px;
+}
+.btn-success {
+    background-color: #38b000;
+    border-color: #38b000;
+}
+.btn-danger {
+    background-color: #d00000;
+    border-color: #d00000;
+}
+
+.btn-primary:hover {
+    background-color: #023e8a;
+    border-color: #023e8a;
+}
+
+nav {
+    margin-top: 10px;
+}
+
+nav a {
+    text-decoration: none;
+    font-weight: 600;
+    color: #0077b6;
+    padding: 10px 20px;
+    border-radius: 8px;
+    border: 2px solid #0077b6;
+    transition: background-color 0.3s, color 0.3s;
+    display: inline-block;
+}
+
+nav a:hover {
+    background-color: #0077b6;
+    color: #fff;
+}
