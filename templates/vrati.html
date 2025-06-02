@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+    <meta charset="UTF-8" />
+    <title>Popis lokacija - Sea Temperature Monitoring</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+
+    <style>
+        body {
+            background-color: #e9f7fc;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 40px 20px;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        .card {
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+            background-color: #ffffff;
+            max-width: 900px;
+            width: 100%;
+            text-align: center;
+        }
+
+        h1 {
+            margin-bottom: 10px;
+            color: #0077b6;
+        }
+
+        .note {
+            font-size: 0.9em;
+            color: #555;
+            margin-bottom: 20px;
+        }
+
+        table {
+            margin-bottom: 30px;
+        }
+
+        .btn-primary {
+            background-color: #0077b6;
+            border-color: #0077b6;
+            margin: 0 10px;
+        }
+        .btn-success {
+            background-color: #38b000;
+            border-color: #38b000;
+        }
+        .btn-danger {
+            background-color: #d00000;
+            border-color: #d00000;
+        }
+
+        .btn-primary:hover {
+            background-color: #023e8a;
+            border-color: #023e8a;
+        }
+
+        nav {
+            margin-top: 10px;
+        }
+
+        nav a {
+            text-decoration: none;
+            font-weight: 600;
+            color: #0077b6;
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: 2px solid #0077b6;
+            transition: background-color 0.3s, color 0.3s;
+            display: inline-block;
+        }
+        nav a:hover {
+            background-color: #0077b6;
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <h1>Popis lokacija mora</h1>
+    <div class="note">* Podaci su sortirani abecedno po nazivu mora *</div>
+
+    <table class="table table-striped table-bordered text-center align-middle" id="locationsTable">
+        <thead class="table-primary">
+            <tr>
+                <th>More</th>
+                <th>Temperatura (°C)</th>
+                <th>Salinitet (‰)</th>
+                <th>Valovi</th>
+                <th>Kvaliteta</th>
+                <th>Akcije</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for loc in data %}
+            <tr data-id="{{ loc.location_id }}">
+                <td contenteditable="true" class="editable" data-field="sea">{{ loc.sea }}</td>
+                <td contenteditable="true" class="editable" data-field="temperature">{{ loc.temperature }}</td>
+                <td contenteditable="true" class="editable" data-field="salinity">{{ loc.salinity }}</td>
+                <td contenteditable="true" class="editable" data-field="waves">{{ loc.waves }}</td>
+                <td contenteditable="true" class="editable" data-field="quality">{{ loc.quality }}</td>
+                <td>
+                    <button class="btn btn-success btn-sm save-btn">Spremi</button>
+                    <button class="btn btn-danger btn-sm delete-btn">Obriši</button>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <nav>
+        <a href="{{ url_for('home') }}"> Povratak na početnu</a>
+        <a href="{{ url_for('dodaj_location') }}"> Dodaj novu lokaciju</a>
+    </nav>
+</div>
+
+
+<script>
+    document.getElementById('locationsTable').addEventListener('click', async (e) => {
+        if (e.target.classList.contains('save-btn')) {
+            const button = e.target;
+            const row = button.closest('tr');
+            const locationId = row.getAttribute('data-id');
+
+            const updatedData = {};
+            let valid = true;
+
+            row.querySelectorAll('.editable').forEach(cell => {
+                const field = cell.getAttribute('data-field');
+                let value = cell.innerText.trim();
+
+                if (field === 'temperature' || field === 'salinity') {
+                    const num = parseFloat(value);
+                    if (isNaN(num)) {
+                        alert(`Molimo unesite valjanu brojčanu vrijednost za ${field}.`);
+                        valid = false;
+                        return;
+                    }
+                    value = num;
+                }
+
+                updatedData[field] = value;
+            });
+
+            if (!valid) return;
+
+            button.disabled = true;
+            button.textContent = 'Spremanje...';
+
+            try {
+                const response = await fetch(`/lokacija/${locationId}`, {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(updatedData)
+                });
+                if (response.ok) {
+                    alert('Uspješno ažurirano!');
+                } else {
+                    alert('Greška pri ažuriranju!');
+                }
+            } catch (err) {
+                alert('Greška pri ažuriranju!');
+            } finally {
+                button.disabled = false;
+                button.textContent = 'Spremi';
+            }
+        } else if (e.target.classList.contains('delete-btn')) {
+            if (!confirm('Jeste li sigurni da želite obrisati ovu lokaciju?')) return;
+
+            const button = e.target;
+            const row = button.closest('tr');
+            const locationId = row.getAttribute('data-id');
+
+            try {
+                const response = await fetch(`/lokacija/${locationId}`, { method: 'DELETE' });
+                if (response.ok) {
+                    alert('Uspješno obrisano!');
+                    row.remove();
+                } else {
+                    alert('Greška pri brisanju!');
+                }
+            } catch (err) {
+                alert('Greška pri brisanju!');
+            }
+        }
+    });
+</script>
+
+</body>
+</html>
